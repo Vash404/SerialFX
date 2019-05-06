@@ -18,7 +18,7 @@ using System.Security.Cryptography;
 /*
  *  Implementata Licenza
  *  
- *  Sistemare chiusura finestre (chiusura e creazione nuove finestre >>)
+ *  Sistemare chiusura finestre (chiusura e creazione nuove finestre >>) Fatto più o meno
  *  passa il mouse su this per il nome vero
  *   
  * 
@@ -41,23 +41,12 @@ namespace Serial
         public CentraleFX()
         {
             InitializeComponent();
-
-            if (!ControlloLicenza())
-            {
-                licenza lic = new licenza();
-                lic.ShowDialog();
-            }
-
-            else
-            {
-                textbox.Text = "Licenza Valida\r\nCollegati au una porta COM";
-            }
-
+            OpenLicenza();
             getAllPorts();                               //Richiamo la funzione
 
             //SQLiteConnection.CreateFile("MyDatabase.sqlite");
-            
-            version.Text = "0.5b";
+
+            version.Text = "0.6b";
         }
 
         void getAllPorts()
@@ -98,16 +87,7 @@ namespace Serial
 
         private void Connect_Click(object sender, EventArgs e)
         {
-            if (!ControlloLicenza())
-            {
-                licenza lic = new licenza();
-                lic.ShowDialog();
-            }
-
-            else
-            {
-                textbox.Text = "Licenza Valida\r\nCollegati au una porta COM";
-            }
+            OpenLicenza();
 
             if (connesso == false)
             {
@@ -127,22 +107,12 @@ namespace Serial
                         status.Value = 100;
                         textbox.Text = "";
                         connesso = true;
-                        connect.Enabled = false;
-                        //connect.Text = "Disconnetti";
+                        //connect.Enabled = false;
+                        connect.Text = "Disconnetti";
                         save.Enabled = true;
                         ripulisci.Enabled = true;
                         serialPort1.DataReceived += new SerialDataReceivedEventHandler(serialPort1_DataReceived);
                         serialPort1.Open();
-                    
-                        //readThread.Start();
-
-                        //this.Invoke(new EventHandler(ChangeText));
-
-                        /*System.Timers.Timer timer = new System.Timers.Timer(TimeSpan.FromSeconds(1).TotalMilliseconds);
-                        timer.AutoReset = true;
-                        timer.Elapsed += new System.Timers.ElapsedEventHandler(Leggi);
-                        timer.Start();*/
-
                     }
                 }
                 catch (UnauthorizedAccessException)
@@ -160,37 +130,12 @@ namespace Serial
             }
         }
 
-        /*private void Leggi(object sender, ElapsedEventArgs e)
-        {
-            Console.WriteLine("Letto!");
-            try
-            {
-                
-                this.Invoke(new EventHandler(ChangeText));
-
-            }
-            catch (TimeoutException)
-            {
-
-                textBox1.Text = "Timeout";
-            }
-        }*/
-
         private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
-            //if (!chiusura) {
-            //    this.Invoke(new EventHandler(ChangeText));
-            //}
-            //else
-            //{
-            //    serialPort1.Close();
-            //    serialPort1.Dispose();
-            //}
             if (connesso == true)                   //se è connesso avvia funzione
             {
                 ReadSerialFile();
             }
-            
         }
 
         private void ReadSerialFile()
@@ -199,15 +144,15 @@ namespace Serial
             try
             {
                 serial = serialPort1.ReadLine();                        //leggo seriale
-            } catch (Exception)
+            }
+            catch (Exception)
 
             {
-                //serialPort1.Dispose();
-                //serialPort1.Close();
+
             }
 
             Console.WriteLine(serial);
-            Application.DoEvents(); 
+            Application.DoEvents();
 
             delegato delegato1 = ChangeText;                      //chiedo al delegato di avviare la funzione
             textbox.Invoke(delegato1);                            //do un calcio al delegato per farlo partire perchè sennò sta li fermo a girarsi i pollici
@@ -242,7 +187,7 @@ namespace Serial
             {
                 return true;
             }
-                
+
             else
                 return false;
         }
@@ -292,7 +237,7 @@ namespace Serial
             return Sb.ToString();
         }
 
-        public static String HWid ()
+        public static String HWid()
         {
             var mbs = new ManagementObjectSearcher("Select ProcessorId From Win32_processor");
             ManagementObjectCollection mbsList = mbs.Get();
@@ -329,6 +274,22 @@ namespace Serial
             }
         }
 
+        public void OpenLicenza()
+        {
+            if (!ControlloLicenza())
+            {
+                this.Hide();
+                licenza lic = new licenza();
+                lic.ShowDialog();
+                this.Close();
+            }
+
+            else
+            {
+                textbox.Text = "Licenza Valida\r\nCollegati au una porta COM";
+            }
+        }
+
         private void label2_Click(object sender, EventArgs e)
         {
             textbox.Text = sha256_hash(HWid());
@@ -336,17 +297,38 @@ namespace Serial
 
         private void closeconn(object sender, EventArgs e)
         {
-            serialPort1.Close();                                                
-        }
-
-        private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-        {
-
+            serialPort1.Close();
         }
 
         private void Label1_Click(object sender, EventArgs e)
         {
-            
+
+        }
+
+        private void Main_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Beta_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void TabControl1_Selected(Object sender, TabControlEventArgs e)
+        {
+            const string message = "Attenzione la beta non è stabile!";
+            const string caption = "Conferma beta";
+            var result = MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Question);
+
+
+            if (result == DialogResult.Yes)
+            {
+                tabControl1.SelectedIndex = 1;
+            }
+
+            else
+                tabControl1.SelectedIndex = 0;
         }
     }
 }

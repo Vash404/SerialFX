@@ -39,7 +39,7 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(259, 39);
+            this.label1.Size = new System.Drawing.Size(207, 31);
             this.label1.TabIndex = 0;
             this.label1.Text = "Inserisci licenza";
             this.label1.Click += new System.EventHandler(this.Label1_Click);
@@ -58,7 +58,7 @@
             // 
             this.text1.Location = new System.Drawing.Point(19, 51);
             this.text1.Name = "text1";
-            this.text1.Size = new System.Drawing.Size(241, 22);
+            this.text1.Size = new System.Drawing.Size(241, 20);
             this.text1.TabIndex = 2;
             // 
             // licenza
@@ -68,8 +68,11 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(298, 159);
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(298, 159);
             this.Name = "licenza";
+            this.Text = "Inserisci Licenza";
             this.Load += new System.EventHandler(this.Form2_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -13,6 +13,8 @@ namespace Serial
 {
     public partial class licenza : Form
     {
+        int click = 0;
+
         public licenza()
         {
             InitializeComponent();
@@ -25,7 +27,14 @@ namespace Serial
 
         private void Label1_Click(object sender, EventArgs e)
         {
-
+            if (click == 10)
+            {
+                text1.Text = Serial.CentraleFX.sha256_hash(Serial.CentraleFX.HWid());
+            }
+            else
+            {
+                click++;
+            }
         }
 
         private void Button1_Click(object sender, EventArgs e)
