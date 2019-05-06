@@ -12,7 +12,17 @@ using System.Timers;
 using System.IO;
 using System.Threading;
 using IronPdf;
-
+using System.Data.SQLite;
+using System.Management;
+using System.Security.Cryptography;
+/*
+ *  Implementata Licenza
+ *  
+ *  Sistemare chiusura finestre (chiusura e creazione nuove finestre >>)
+ *  passa il mouse su this per il nome vero
+ *   
+ * 
+ */
 namespace Serial
 {
     public partial class CentraleFX : Form
@@ -31,9 +41,23 @@ namespace Serial
         public CentraleFX()
         {
             InitializeComponent();
+
+            if (!ControlloLicenza())
+            {
+                licenza lic = new licenza();
+                lic.ShowDialog();
+            }
+
+            else
+            {
+                textbox.Text = "Licenza Valida\r\nCollegati au una porta COM";
+            }
+
             getAllPorts();                               //Richiamo la funzione
+
+            //SQLiteConnection.CreateFile("MyDatabase.sqlite");
             
-            version.Text = "0.5b";            
+            version.Text = "0.5b";
         }
 
         void getAllPorts()
@@ -74,6 +98,17 @@ namespace Serial
 
         private void Connect_Click(object sender, EventArgs e)
         {
+            if (!ControlloLicenza())
+            {
+                licenza lic = new licenza();
+                lic.ShowDialog();
+            }
+
+            else
+            {
+                textbox.Text = "Licenza Valida\r\nCollegati au una porta COM";
+            }
+
             if (connesso == false)
             {
                 try
@@ -241,26 +276,77 @@ namespace Serial
             textbox.Text = "";
         }
 
+        public static String sha256_hash(String value)
+        {
+            StringBuilder Sb = new StringBuilder();
+
+            using (SHA256 hash = SHA256Managed.Create())
+            {
+                Encoding enc = Encoding.UTF8;
+                Byte[] result = hash.ComputeHash(enc.GetBytes(value));
+
+                foreach (Byte b in result)
+                    Sb.Append(b.ToString("x2"));
+            }
+
+            return Sb.ToString();
+        }
+
+        public static String HWid ()
+        {
+            var mbs = new ManagementObjectSearcher("Select ProcessorId From Win32_processor");
+            ManagementObjectCollection mbsList = mbs.Get();
+            string id = "";
+            foreach (ManagementObject mo in mbsList)
+            {
+                id = mo["ProcessorId"].ToString();
+                break;
+            }
+
+            return id.ToString();
+        }
+
+        public static Boolean ControlloLicenza()
+        {
+            if (File.Exists("licenza"))
+            {
+                string text = File.ReadAllText("licenza");
+
+                if (text == sha256_hash(HWid()))
+                {
+                    return true;
+                }
+
+                else
+                {
+                    return false;
+                }
+            }
+
+            else
+            {
+                return false;
+            }
+        }
+
         private void label2_Click(object sender, EventArgs e)
         {
-            var Renderer = new IronPdf.HtmlToPdf();
-            var PDF = Renderer.RenderHTMLFileAsPdf("test.html");
-
-            Renderer.PrintOptions.Footer = new HtmlHeaderFooter()
-            {
-                Height = 15,
-                HtmlFragment = "<center><i>{page} of {total-pages}<i></center>",
-                DrawDividerLine = true
-            };
-
-            var OutputPath = "Invoice.pdf";
-            PDF.SaveAs(OutputPath);
+            textbox.Text = sha256_hash(HWid());
         }
 
         private void closeconn(object sender, EventArgs e)
         {
             serialPort1.Close();                                                
         }
-        
+
+        private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+        }
+
+        private void Label1_Click(object sender, EventArgs e)
+        {
+            
+        }
     }
 }
