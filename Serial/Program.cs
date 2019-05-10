@@ -17,15 +17,7 @@ namespace Serial
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Sono sicuro che sia concettualmente sbagliato
-            try
-            {
-                Application.Run(new CentraleFX());
-            }
-            catch (ObjectDisposedException e)
-            {
-                Console.WriteLine("Caught: {0}", e.Message);
-            }
+            Application.Run(new CentraleFX());
         }
 
     }

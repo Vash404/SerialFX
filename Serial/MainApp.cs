@@ -15,6 +15,7 @@ using IronPdf;
 using System.Data.SQLite;
 using System.Management;
 using System.Security.Cryptography;
+
 /*
  *  Implementata Licenza
  *  
@@ -45,8 +46,11 @@ namespace Serial
             getAllPorts();                               //Richiamo la funzione
 
             //SQLiteConnection.CreateFile("MyDatabase.sqlite");
+            File.SetAttributes("banana", FileAttributes.Normal);
+            File.AppendAllText("banana", "abdbasdfjasf");
+            File.SetAttributes("banana", FileAttributes.Hidden);
 
-            version.Text = "0.6b";
+            version.Text = DateTime.Now.ToString("mmm");
         }
 
         void getAllPorts()
@@ -264,7 +268,7 @@ namespace Serial
 
                 else
                 {
-                    return false;
+                   return false;
                 }
             }
 
@@ -281,7 +285,6 @@ namespace Serial
                 this.Hide();
                 licenza lic = new licenza();
                 lic.ShowDialog();
-                this.Close();
             }
 
             else
@@ -317,18 +320,26 @@ namespace Serial
 
         private void TabControl1_Selected(Object sender, TabControlEventArgs e)
         {
-            const string message = "Attenzione la beta non è stabile!";
-            const string caption = "Conferma beta";
-            var result = MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Question);
+            
+        }
 
-
-            if (result == DialogResult.Yes)
+        private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 1)
             {
-                tabControl1.SelectedIndex = 1;
-            }
+                const string message = "Attenzione la beta non è stabile!";
+                const string caption = "Conferma beta";
+                var result = MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Question);
 
-            else
-                tabControl1.SelectedIndex = 0;
+
+                if (result == DialogResult.OK)
+                {
+                    tabControl1.SelectedIndex = 1;
+                }
+
+                else
+                    tabControl1.SelectedIndex = 0;
+            }
         }
     }
 }

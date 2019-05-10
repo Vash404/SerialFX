@@ -40,11 +40,10 @@ namespace Serial
         private void Button1_Click(object sender, EventArgs e)
         {
             File.WriteAllText("licenza", text1.Text);
+            File.SetAttributes("licenza", FileAttributes.Hidden);
+
 
             this.Hide();
-
-            CentraleFX CFX = new CentraleFX();
-            CFX.ShowDialog();
             this.Close();
         }
     }
