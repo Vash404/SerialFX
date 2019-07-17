@@ -29,7 +29,7 @@ namespace Serial
         {
             if (click == 10)
             {
-                text1.Text = Serial.CentraleFX.sha256_hash(Serial.CentraleFX.HWid());
+                text1.Text = Serial.CentraleFX.sha256_hash(string.Concat(Serial.CentraleFX.HWid(),"2019"));
             }
             else
             {
@@ -40,11 +40,15 @@ namespace Serial
         private void Button1_Click(object sender, EventArgs e)
         {
             File.WriteAllText("licenza", text1.Text);
-            File.SetAttributes("licenza", FileAttributes.Hidden);
 
 
             this.Hide();
             this.Close();
+        }
+
+        private void Text1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
