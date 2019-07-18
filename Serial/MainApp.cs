@@ -18,6 +18,10 @@ using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
+using PdfSharp.Drawing.Layout;
+using System.Diagnostics;
+using MigraDoc.Rendering;
+using MigraDoc.DocumentObjectModel;
 
 /*
  *  Implementata Licenza
@@ -52,9 +56,18 @@ namespace Serial
             OpenLicenza();
             getAllPorts();                               //Richiamo la funzione
 
-            version.Text = DateTime.Now.ToString("dd/MM");
 
-            beta.Enabled = false;
+
+            if (Properties.Settings.Default.Connessione_auto)
+            {
+                connect_to_port();
+            }
+
+            conn_auto_check.Checked = Properties.Settings.Default.Connessione_auto;
+
+            version.Text = "20190718b";
+
+            //settings.Enabled = false;
 
 
         }
@@ -69,12 +82,11 @@ namespace Serial
                 port.SelectedIndex = 0;                     //Dio merda
             }
 
-            comboBox1.Items.Add("NESSUNA");
-            comboBox1.Items.AddRange(ports);                  //Le inserisco nel menù in impostazioni
+            conn_auto_list.Items.AddRange(ports);                  //Le inserisco nel menù in impostazioni
 
-            if (comboBox1.Items.Count != 0)                       
+            if (conn_auto_list.Items.Count != 0)                       
             {
-                comboBox1.SelectedIndex = 0;                     
+                conn_auto_list.SelectedIndex = 0;                     
             }
 
         }
@@ -91,6 +103,40 @@ namespace Serial
         }
 
         private void Connect_Click(object sender, EventArgs e)
+        {
+            connect_to_port();
+        }
+
+        private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
+        {
+            if (connesso == true)                   //se è connesso avvia funzione
+            {
+                ReadSerialFile();
+            }
+        }
+
+        private void ReadSerialFile()
+        {
+            att = textbox.Text;                                     //prendo valori correnti
+            try
+            {
+                serial = serialPort1.ReadLine();                        //leggo seriale
+            }
+            catch (Exception)
+
+            {
+
+            }
+
+            Console.WriteLine(serial);
+            Application.DoEvents();
+
+            delegato delegato1 = ChangeText;                      //chiedo al delegato di avviare la funzione
+            textbox.Invoke(delegato1);                            //do un calcio al delegato per farlo partire perchè sennò sta li fermo a girarsi i pollici
+            //serial = serial.Replace("\r", "\r\n");              //controllo a capo centraleFX, lo fa il delegato perchè lo pago abbastanza
+        }
+
+        private void connect_to_port()
         {
             OpenLicenza();
 
@@ -134,42 +180,17 @@ namespace Serial
                 connect.Text = "Connetti";
             }
         }
-
-        private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
-        {
-            if (connesso == true)                   //se è connesso avvia funzione
-            {
-                ReadSerialFile();
-            }
-        }
-
-        private void ReadSerialFile()
-        {
-            att = textbox.Text;                                     //prendo valori correnti
-            try
-            {
-                serial = serialPort1.ReadLine();                        //leggo seriale
-            }
-            catch (Exception)
-
-            {
-
-            }
-
-            Console.WriteLine(serial);
-            Application.DoEvents();
-
-            delegato delegato1 = ChangeText;                      //chiedo al delegato di avviare la funzione
-            textbox.Invoke(delegato1);                            //do un calcio al delegato per farlo partire perchè sennò sta li fermo a girarsi i pollici
-            //serial = serial.Replace("\r", "\r\n");              //controllo a capo centraleFX, lo fa il delegato perchè lo pago abbastanza
-        }
         private void ChangeText()
         {
-            textbox.Text = att + Environment.NewLine + Environment.NewLine + serial;    //piglio la linea due accapi e ci siamo
+            serial = serial.Replace("\r", "\r\n");                                      //spostato più sopra, rompo tutto
+            //sono scemo textbox.Text = att + Environment.NewLine + Environment.NewLine + serial1;    //piglio la linea due accapi e ci siamo
+            textbox.Text = att + serial;                                                //tengo la versione prima per vedere quanto sono scemo
             textbox.SelectionStart = textbox.Text.Length;
             textbox.ScrollToCaret();                                                    //e scorro fino in fondo
-            serial = serial.Replace("\r", "\r\n");                                      //siccome windows non rispetta gli standard metto questi
-            File.AppendAllText("CentraleFXlogTEST.txt", serial);                            //alla fine metto tutto nel file
+            //serial = serial.Replace("\r", "\r\n");                                      //siccome windows non rispetta gli standard metto questi
+            //File.AppendAllText(Properties.Settings.Default.path_1, serial);                            //alla fine metto tutto nel file
+            File.AppendAllText(Properties.Settings.Default.path_2, serial);
+            File.AppendAllText(Properties.Settings.Default.backup, serial);
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -219,54 +240,46 @@ namespace Serial
 
 
 
-
-
-
-
-
-
-
-
-            PdfDocument document = new PdfDocument();
-            document.Info.Title = "Created with PDFsharp";
-
-            // Create an empty page
-            PdfPage page = document.AddPage();
-
-            // Get an XGraphics object for drawing
-            XGraphics gfx = XGraphics.FromPdfPage(page);
-
-            // Create a font
-            XFont font = new XFont("Verdana", 20, XFontStyle.BoldItalic);
-
-            // Draw the text
-            gfx.DrawString(textbox.Text, font, XBrushes.Black,
-              new XRect(0, 0, page.Width, page.Height),
-              XStringFormats.Center);
-
-            // Save the document...
-            const string filename = "HelloWorld.pdf";
-            document.Save(filename);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 File.WriteAllText(saveFileDialog1.FileName, textbox.Text);
             }
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+            saveFileDialog1.Filter = "Documento PDF (*.pdf)|*.pdf";             //serve per salvare
+            saveFileDialog1.DefaultExt = "pdf";
+            saveFileDialog1.AddExtension = true;
+
+
+            //inizio creazione pdf
+            Document document = new Document();
+            Section section = document.AddSection();
+
+            section.PageSetup.PageFormat = PageFormat.A4;
+            section.PageSetup.TopMargin = "1cm";
+
+
+            Paragraph paragraph = section.AddParagraph();
+            paragraph.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 0, 0);
+            paragraph.AddFormattedText(textbox.Text, MigraDoc.DocumentObjectModel.TextFormat.NotBold);
+
+            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(false,
+            PdfFontEmbedding.Always);
+
+            pdfRenderer.Document = document;
+
+            pdfRenderer.RenderDocument();
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                pdfRenderer.PdfDocument.Save(saveFileDialog1.FileName);
+            }
+
+            //Process.Start(filename); //serve per apertura automatica
         }
 
         private void ripulisci_Click(object sender, EventArgs e)
@@ -375,7 +388,7 @@ namespace Serial
 
         private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (tabControl1.SelectedIndex == 2)
+            if (auto_port.SelectedIndex == 2)
             {
                 const string message = "Attenzione la beta non è stabile!";
                 const string caption = "Conferma beta";
@@ -384,17 +397,78 @@ namespace Serial
 
                 if (result == DialogResult.OK)
                 {
-                    tabControl1.SelectedIndex = 1;
+                    auto_port.SelectedIndex = 1;
                 }
 
                 else
-                    tabControl1.SelectedIndex = 0;
+                    auto_port.SelectedIndex = 0;
+            }
+        }
+
+        private void ComboBox1_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        public class LayoutHelper
+        {
+            private readonly PdfDocument _document;
+            private readonly XUnit _topPosition;
+            private readonly XUnit _bottomMargin;
+            private XUnit _currentPosition;
+
+            public LayoutHelper(PdfDocument document, XUnit topPosition, XUnit bottomMargin)
+            {
+                _document = document;
+                _topPosition = topPosition;
+                _bottomMargin = bottomMargin;
+                // Set a value outside the page - a new page will be created on the first request.
+                _currentPosition = bottomMargin + 10000;
+            }
+
+            public XUnit GetLinePosition(XUnit requestedHeight)
+            {
+                return GetLinePosition(requestedHeight, -1f);
+            }
+
+            public XUnit GetLinePosition(XUnit requestedHeight, XUnit requiredHeight)
+            {
+                XUnit required = requiredHeight == -1f ? requestedHeight : requiredHeight;
+                if (_currentPosition + required > _bottomMargin)
+                    CreatePage();
+                XUnit result = _currentPosition;
+                _currentPosition += requestedHeight;
+                return result;
+            }
+
+            public XGraphics Gfx { get; private set; }
+            public PdfPage Page { get; private set; }
+
+            void CreatePage()
+            {
+                Page = _document.AddPage();
+                Page.Size = PageSize.A4;
+                Gfx = XGraphics.FromPdfPage(Page);
+                _currentPosition = _topPosition;
             }
         }
 
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
+            if (conn_auto_check.Checked)
+            {
+                Properties.Settings.Default.Connessione_auto = true;
 
+                Properties.Settings.Default.Save();
+            }
+
+            else
+            {
+                Properties.Settings.Default.Connessione_auto = false;
+
+                Properties.Settings.Default.Save();
+            }
         }
+
     }
 }

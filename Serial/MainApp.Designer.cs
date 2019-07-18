@@ -40,14 +40,17 @@
             this.version = new System.Windows.Forms.Label();
             this.save = new System.Windows.Forms.Button();
             this.ripulisci = new System.Windows.Forms.Button();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.auto_port = new System.Windows.Forms.TabControl();
             this.main = new System.Windows.Forms.TabPage();
-            this.beta = new System.Windows.Forms.TabPage();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.print = new System.Windows.Forms.Button();
+            this.settings = new System.Windows.Forms.TabPage();
+            this.conn_auto_list = new System.Windows.Forms.ComboBox();
+            this.conn_auto_check = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.tabControl1.SuspendLayout();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.auto_port.SuspendLayout();
             this.main.SuspendLayout();
-            this.beta.SuspendLayout();
+            this.settings.SuspendLayout();
             this.SuspendLayout();
             // 
             // port
@@ -119,13 +122,13 @@
             // version
             // 
             this.version.AutoSize = true;
-            this.version.Location = new System.Drawing.Point(419, 502);
+            this.version.Location = new System.Drawing.Point(393, 502);
             this.version.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.version.Name = "version";
             this.version.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.version.Size = new System.Drawing.Size(80, 17);
             this.version.TabIndex = 6;
-            this.version.Text = "<Versione>";
+            this.version.Text = "19980722b";
             this.version.Click += new System.EventHandler(this.version_Click);
             // 
             // save
@@ -136,14 +139,14 @@
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(100, 28);
             this.save.TabIndex = 7;
-            this.save.Text = "Salva";
+            this.save.Text = "Salva TXT";
             this.save.UseVisualStyleBackColor = true;
             this.save.Click += new System.EventHandler(this.save_Click);
             // 
             // ripulisci
             // 
             this.ripulisci.Enabled = false;
-            this.ripulisci.Location = new System.Drawing.Point(356, 430);
+            this.ripulisci.Location = new System.Drawing.Point(356, 396);
             this.ripulisci.Margin = new System.Windows.Forms.Padding(4);
             this.ripulisci.Name = "ripulisci";
             this.ripulisci.Size = new System.Drawing.Size(100, 28);
@@ -152,21 +155,22 @@
             this.ripulisci.UseVisualStyleBackColor = true;
             this.ripulisci.Click += new System.EventHandler(this.ripulisci_Click);
             // 
-            // tabControl1
+            // auto_port
             // 
-            this.tabControl1.Controls.Add(this.main);
-            this.tabControl1.Controls.Add(this.beta);
-            this.tabControl1.Location = new System.Drawing.Point(1, 0);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(485, 551);
-            this.tabControl1.TabIndex = 0;
-            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.TabControl1_SelectedIndexChanged);
+            this.auto_port.Controls.Add(this.main);
+            this.auto_port.Controls.Add(this.settings);
+            this.auto_port.Location = new System.Drawing.Point(1, 0);
+            this.auto_port.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.auto_port.Name = "auto_port";
+            this.auto_port.SelectedIndex = 0;
+            this.auto_port.Size = new System.Drawing.Size(485, 551);
+            this.auto_port.TabIndex = 0;
+            this.auto_port.SelectedIndexChanged += new System.EventHandler(this.TabControl1_SelectedIndexChanged);
             // 
             // main
             // 
             this.main.BackColor = System.Drawing.SystemColors.Control;
+            this.main.Controls.Add(this.print);
             this.main.Controls.Add(this.port);
             this.main.Controls.Add(this.ripulisci);
             this.main.Controls.Add(this.save);
@@ -185,28 +189,52 @@
             this.main.Text = "Main";
             this.main.Click += new System.EventHandler(this.Main_Click);
             // 
-            // beta
+            // print
             // 
-            this.beta.BackColor = System.Drawing.SystemColors.Control;
-            this.beta.Controls.Add(this.label3);
-            this.beta.Controls.Add(this.comboBox1);
-            this.beta.Cursor = System.Windows.Forms.Cursors.Default;
-            this.beta.Location = new System.Drawing.Point(4, 25);
-            this.beta.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.beta.Name = "beta";
-            this.beta.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.beta.Size = new System.Drawing.Size(477, 522);
-            this.beta.TabIndex = 1;
-            this.beta.Text = "Impostazioni";
-            this.beta.Click += new System.EventHandler(this.Beta_Click);
+            this.print.Location = new System.Drawing.Point(356, 431);
+            this.print.Name = "print";
+            this.print.Size = new System.Drawing.Size(100, 28);
+            this.print.TabIndex = 9;
+            this.print.Text = "Stampa";
+            this.print.UseVisualStyleBackColor = true;
+            this.print.Click += new System.EventHandler(this.Button1_Click);
             // 
-            // comboBox1
+            // settings
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(26, 48);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 24);
-            this.comboBox1.TabIndex = 0;
+            this.settings.BackColor = System.Drawing.SystemColors.Control;
+            this.settings.Controls.Add(this.conn_auto_list);
+            this.settings.Controls.Add(this.conn_auto_check);
+            this.settings.Controls.Add(this.label3);
+            this.settings.Cursor = System.Windows.Forms.Cursors.Default;
+            this.settings.Location = new System.Drawing.Point(4, 25);
+            this.settings.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.settings.Name = "settings";
+            this.settings.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.settings.Size = new System.Drawing.Size(477, 522);
+            this.settings.TabIndex = 1;
+            this.settings.Text = "Impostazioni";
+            this.settings.Click += new System.EventHandler(this.Beta_Click);
+            // 
+            // conn_auto_list
+            // 
+            this.conn_auto_list.DisplayMember = "1";
+            this.conn_auto_list.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.conn_auto_list.FormattingEnabled = true;
+            this.conn_auto_list.Location = new System.Drawing.Point(26, 44);
+            this.conn_auto_list.Margin = new System.Windows.Forms.Padding(4);
+            this.conn_auto_list.Name = "conn_auto_list";
+            this.conn_auto_list.Size = new System.Drawing.Size(136, 24);
+            this.conn_auto_list.TabIndex = 3;
+            // 
+            // conn_auto_check
+            // 
+            this.conn_auto_check.AutoSize = true;
+            this.conn_auto_check.Location = new System.Drawing.Point(180, 48);
+            this.conn_auto_check.Name = "conn_auto_check";
+            this.conn_auto_check.Size = new System.Drawing.Size(18, 17);
+            this.conn_auto_check.TabIndex = 2;
+            this.conn_auto_check.UseVisualStyleBackColor = true;
+            this.conn_auto_check.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
             // label3
             // 
@@ -223,7 +251,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(475, 550);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.auto_port);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
@@ -232,11 +260,11 @@
             this.Name = "CentraleFX";
             this.Text = "Seriale Centrale FX";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.tabControl1.ResumeLayout(false);
+            this.auto_port.ResumeLayout(false);
             this.main.ResumeLayout(false);
             this.main.PerformLayout();
-            this.beta.ResumeLayout(false);
-            this.beta.PerformLayout();
+            this.settings.ResumeLayout(false);
+            this.settings.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -252,11 +280,14 @@
         private System.Windows.Forms.Label version;
         private System.Windows.Forms.Button save;
         private System.Windows.Forms.Button ripulisci;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl auto_port;
         private System.Windows.Forms.TabPage main;
-        private System.Windows.Forms.TabPage beta;
+        private System.Windows.Forms.TabPage settings;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.CheckBox conn_auto_check;
+        private System.Windows.Forms.ComboBox conn_auto_list;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.Button print;
     }
 }
 
