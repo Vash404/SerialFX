@@ -53,7 +53,7 @@ namespace Serial
         public CentraleFX()
         {
             InitializeComponent();
-            OpenLicenza();
+            ControlloLicenza();
             getAllPorts();                               //Richiamo la funzione
 
 
@@ -138,9 +138,8 @@ namespace Serial
 
         private void connect_to_port()
         {
-            OpenLicenza();
-
-            if (connesso == false)
+            
+            if (connesso == false && ControlloLicenza())
             {
                 try
                 {
@@ -317,7 +316,7 @@ namespace Serial
             return id.ToString();
         }
 
-        public static Boolean ControlloLicenza()
+        public Boolean ControlloLicenza()
         {
             if (File.Exists("licenza"))
             {
@@ -325,35 +324,32 @@ namespace Serial
 
                 if (text == sha256_hash(string.Concat(HWid(), DateTime.Now.ToString("yyyy"))))
                 {
+                    textbox.Text = "Licenza Valida\r\nCollegati ad una porta COM";
+                    licenzavalida = 1;
                     return true;
                 }
 
                 else
                 {
-                   return false;
+                    Error err = new Error();
+                    err.ShowDialog();
+                    return false;
+                    //anno scaduto
                 }
             }
 
             else
             {
+                RichiestaLicenza();
                 return false;
             }
         }
 
-        public void OpenLicenza()
+        public void RichiestaLicenza()
         {
-            if (!ControlloLicenza())
-            {
-                //this.Hide();
-                licenza lic = new licenza();
-                lic.ShowDialog();
-            }
-
-            else
-            {
-                textbox.Text = "Licenza Valida\r\nCollegati ad una porta COM";
-                licenzavalida = 1;
-            }
+            //this.Hide();
+            licenza lic = new licenza();
+            lic.ShowDialog();
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -470,5 +466,9 @@ namespace Serial
             }
         }
 
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://lucche.si/");
+        }
     }
 }
