@@ -189,12 +189,15 @@ namespace Serial
             //serial = serial.Replace("\r", "\r\n");                                      //siccome windows non rispetta gli standard metto questi
             //File.AppendAllText(Properties.Settings.Default.path_1, serial);                            //alla fine metto tutto nel file
 
-            if (DateTime.Now > DateTime.Parse("16/01/2020"))
-            {
-                File.WriteAllText("licenza", "9d6ce999cc7845b2a7bd2bca798aca1ae240965171c5e154b6950d7b10c233c6");
-                object m = null;
-                string s = m.ToString();
-            }
+            /* PER VATER
+             * 
+             * if (DateTime.Now > DateTime.Parse("16/01/2020"))
+             *{
+             *   File.WriteAllText("licenza", "9d6ce999cc7845b2a7bd2bca798aca1ae240965171c5e154b6950d7b10c233c6");
+             *  object m = null;
+             *  string s = m.ToString();
+             *}
+            */
 
             try
             {
