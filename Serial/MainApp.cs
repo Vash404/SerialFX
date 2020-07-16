@@ -65,7 +65,7 @@ namespace Serial
 
             conn_auto_check.Checked = Properties.Settings.Default.Connessione_auto;
 
-            version.Text = "20190718b";
+            version.Text = "20200716b";
 
             //settings.Enabled = false;
 
