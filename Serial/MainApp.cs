@@ -285,7 +285,6 @@ namespace Serial
             section.PageSetup.PageFormat = PageFormat.A4;
             section.PageSetup.TopMargin = "1cm";
 
-
             Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 0, 0);
             paragraph.AddFormattedText(textbox.Text, MigraDoc.DocumentObjectModel.TextFormat.NotBold);
@@ -493,6 +492,59 @@ namespace Serial
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://lucche.si/");
+        }
+
+        private void printTitle_Click(object sender, EventArgs e)
+        {
+            PrintNameTitle NameTitle = new PrintNameTitle();
+            NameTitle.ShowDialog();
+
+            string title = NameTitle.TextBoxText;
+
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+            saveFileDialog1.FileName = title;
+            saveFileDialog1.Filter = "Documento PDF (*.pdf)|*.pdf";             //serve per salvare
+            saveFileDialog1.DefaultExt = "pdf";
+            saveFileDialog1.AddExtension = true;
+
+
+            //inizio creazione pdf
+            Document document = new Document();
+            Section section = document.AddSection();
+
+            section.PageSetup.PageFormat = PageFormat.A4;
+            section.PageSetup.TopMargin = "1cm";
+
+            //-------------------------------------------------------------------------------------------------------------------------------
+
+            document.DefaultPageSetup.HeaderDistance = "0.5cm";
+
+            section.PageSetup.DifferentFirstPageHeaderFooter = true;
+            Paragraph titolo = section.Headers.FirstPage.AddParagraph();
+            titolo.AddFormattedText(title, MigraDoc.DocumentObjectModel.TextFormat.Bold);
+            titolo.Format.Font.Size = 20;
+            titolo.Format.Alignment = ParagraphAlignment.Center;
+
+
+            //-------------------------------------------------------------------------------------------------------------------------------
+            Paragraph paragraph = section.AddParagraph();
+            paragraph.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 0, 0);
+            paragraph.AddFormattedText("\n\n" + textbox.Text, MigraDoc.DocumentObjectModel.TextFormat.NotBold);
+
+            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(false,
+            PdfFontEmbedding.Always);
+
+            pdfRenderer.Document = document;
+
+            pdfRenderer.RenderDocument();
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                pdfRenderer.PdfDocument.Save(saveFileDialog1.FileName);
+            }
+
+            //Process.Start(filename); //serve per apertura automatica
         }
     }
 }
