@@ -29,7 +29,7 @@ namespace Serial
         {
             if (click == 10)
             {
-                text1.Text = Serial.CentraleFX.sha256_hash(string.Concat(Serial.CentraleFX.HWid(),"2020"));
+                text1.Text = Serial.CentraleFX.sha256_hash(string.Concat(Serial.CentraleFX.HWid(),"2021"));
             }
             else
             {

@@ -9,7 +9,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="path_1" Type="System.String" Scope="User">
-      <Value Profile="(Default)">%UserProfile%\Desktop\CentraleFXlog.txt</Value>
+      <Value Profile="(Default)">My.Computer.FileSystem.SpecialDirectories.MyDocuments\CentraleFX\CentraleFXlog.txt</Value>
     </Setting>
     <Setting Name="path_2" Type="System.String" Scope="User">
       <Value Profile="(Default)">CentraleFXlog.txt</Value>

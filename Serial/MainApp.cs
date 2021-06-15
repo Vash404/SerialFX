@@ -45,6 +45,7 @@ namespace Serial
         Boolean connesso = false;
         string att = "";                                //inizalizzo variabili globali
         string serial = "";
+        string mydocument = "";
         int licenzavalida = 0;
 
         
@@ -65,7 +66,7 @@ namespace Serial
 
             conn_auto_check.Checked = Properties.Settings.Default.Connessione_auto;
 
-            version.Text = "20200716b";
+            version.Text = "20210615p";
 
             //settings.Enabled = false;
 
@@ -150,9 +151,8 @@ namespace Serial
                     else
                     {
                         //Thread readThread = new Thread(Read);
-
                         serialPort1.PortName = port.Text;
-                        serialPort1.BaudRate = 9600;
+                        serialPort1.BaudRate = 9600;//qui devi fare la connessione automatica alla porta giusta.
 
                         status.Value = 100;
                         textbox.Text = "";
@@ -198,6 +198,22 @@ namespace Serial
              *  string s = m.ToString();
              *}
             */
+            mydocument = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            mydocument += "/CentraleFX";
+            
+            try
+            {
+                if (!Directory.Exists(mydocument))
+                {
+                    DirectoryInfo di = Directory.CreateDirectory(mydocument);
+                }
+
+                mydocument += "/logs";
+                File.AppendAllText(mydocument, serial);
+            }
+            catch
+            {
+            }
 
             try
             {
@@ -545,6 +561,13 @@ namespace Serial
             }
 
             //Process.Start(filename); //serve per apertura automatica
+        }
+
+        private void conn_auto_list_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.Connessione_auto_porta = conn_auto_list.Text;
+
+            Properties.Settings.Default.Save();
         }
     }
 }

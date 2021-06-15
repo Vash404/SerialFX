@@ -42,6 +42,7 @@
             this.ripulisci = new System.Windows.Forms.Button();
             this.auto_port = new System.Windows.Forms.TabControl();
             this.main = new System.Windows.Forms.TabPage();
+            this.printTitle = new System.Windows.Forms.Button();
             this.print = new System.Windows.Forms.Button();
             this.settings = new System.Windows.Forms.TabPage();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -49,7 +50,7 @@
             this.conn_auto_check = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.printTitle = new System.Windows.Forms.Button();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.auto_port.SuspendLayout();
             this.main.SuspendLayout();
             this.settings.SuspendLayout();
@@ -183,6 +184,17 @@
             this.main.Text = "Main";
             this.main.Click += new System.EventHandler(this.Main_Click);
             // 
+            // printTitle
+            // 
+            this.printTitle.Location = new System.Drawing.Point(267, 367);
+            this.printTitle.Margin = new System.Windows.Forms.Padding(2);
+            this.printTitle.Name = "printTitle";
+            this.printTitle.Size = new System.Drawing.Size(81, 23);
+            this.printTitle.TabIndex = 10;
+            this.printTitle.Text = "Stampa Titolo";
+            this.printTitle.UseVisualStyleBackColor = true;
+            this.printTitle.Click += new System.EventHandler(this.printTitle_Click);
+            // 
             // print
             // 
             this.print.Location = new System.Drawing.Point(267, 340);
@@ -232,6 +244,7 @@
             this.conn_auto_list.Name = "conn_auto_list";
             this.conn_auto_list.Size = new System.Drawing.Size(103, 21);
             this.conn_auto_list.TabIndex = 3;
+            this.conn_auto_list.SelectedIndexChanged += new System.EventHandler(this.conn_auto_list_SelectedIndexChanged);
             // 
             // conn_auto_check
             // 
@@ -254,16 +267,11 @@
             this.label3.TabIndex = 1;
             this.label3.Text = "Connessione automatica a";
             // 
-            // printTitle
+            // imageList1
             // 
-            this.printTitle.Location = new System.Drawing.Point(267, 367);
-            this.printTitle.Margin = new System.Windows.Forms.Padding(2);
-            this.printTitle.Name = "printTitle";
-            this.printTitle.Size = new System.Drawing.Size(81, 23);
-            this.printTitle.TabIndex = 10;
-            this.printTitle.Text = "Stampa Titolo";
-            this.printTitle.UseVisualStyleBackColor = true;
-            this.printTitle.Click += new System.EventHandler(this.printTitle_Click);
+            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // CentraleFX
             // 
@@ -309,6 +317,7 @@
         private System.Windows.Forms.Button print;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.Button printTitle;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }
 
