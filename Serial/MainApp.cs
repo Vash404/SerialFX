@@ -22,6 +22,7 @@ using PdfSharp.Drawing.Layout;
 using System.Diagnostics;
 using MigraDoc.Rendering;
 using MigraDoc.DocumentObjectModel;
+using System.Media;
 
 /*
  *  Implementata Licenza
@@ -47,14 +48,16 @@ namespace Serial
         string serial = "";
         string mydocument = "";
         int licenzavalida = 0;
+        string riga = "";
+        string paragrafo = "";
+        string paragrafoPrecedente = "";
 
-        
         //string stringa = "";
 
         public CentraleFX()
         {
             InitializeComponent();
-            ControlloLicenza();
+            //ControlloLicenza();
             getAllPorts();                               //Richiamo la funzione
 
 
@@ -66,7 +69,7 @@ namespace Serial
 
             conn_auto_check.Checked = Properties.Settings.Default.Connessione_auto;
 
-            version.Text = "20210615p";
+            version.Text = "20220101R"; //P R O C I O N I
 
             //settings.Enabled = false;
 
@@ -140,11 +143,11 @@ namespace Serial
         private void connect_to_port()
         {
             
-            if (connesso == false && ControlloLicenza())
+            if (!connesso) //if (connesso == false && ControlloLicenza())
             {
                 try
                 {
-                    if (port.Text == "" || licenzavalida == 0)
+                    if (port.Text == "") //if (port.Text == "" || licenzavalida == 0)
                     {
                         textbox.Text = "Seleziona una porta COM";
                     }
@@ -181,9 +184,37 @@ namespace Serial
         }
         private void ChangeText()
         {
+            riga = serial;
+            paragrafo += riga;
+
+            if (paragrafo.Substring(Math.Max(0, paragrafo.Length - 2)) == "\r\r")
+            {
+                paragrafoPrecedente = paragrafo;
+                paragrafo = "";
+
+                try
+                {
+                    //SoundPlayer simpleSound = new SoundPlayer(@"raccoon.wav");
+                    //simpleSound.Play();
+                }
+                
+                catch
+                {
+                }
+                
+            }
+            //serialPrecedente = serial;
+            
+            debugSerialTextArea.Text = serial;
+            debugRigaTextArea.Text = riga;
+            debugParagrafoTextArea.Text = paragrafo;
+            debugParagrafoPrecedenteTextArea.Text = paragrafoPrecedente;
+            debugCombinedTextArea.Text = att + serial;
+
             serial = serial.Replace("\r", "\r\n");                                      //spostato più sopra, rompo tutto
             //sono scemo textbox.Text = att + Environment.NewLine + Environment.NewLine + serial1;    //piglio la linea due accapi e ci siamo
             textbox.Text = att + serial;                                                //tengo la versione prima per vedere quanto sono scemo
+            
             textbox.SelectionStart = textbox.Text.Length;
             textbox.ScrollToCaret();                                                    //e scorro fino in fondo
             //serial = serial.Replace("\r", "\r\n");                                      //siccome windows non rispetta gli standard metto questi
@@ -423,7 +454,7 @@ namespace Serial
 
         private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (auto_port.SelectedIndex == 2)
+            if (auto_port.SelectedIndex == 1)
             {
                 const string message = "Attenzione la beta non è stabile!";
                 const string caption = "Conferma beta";
